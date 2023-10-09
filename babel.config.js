@@ -4,22 +4,14 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo', 'module:metro-react-native-babel-preset'],
     plugins: [
-      // react-native-dotenv
+      'react-native-reanimated/plugin',
+      '@babel/plugin-proposal-record-and-tuple',
       [
         'module:react-native-dotenv',
-        // Development 환경 파일 설정
         {
-          envName: 'APP_ENV',
           moduleName: '@env',
-          path: '.env.local.local',
-          blocklist: null,
-          allowlist: null,
-          blacklist: null, // DEPRECATED
-          whitelist: null, // DEPRECATED
-          safe: false,
-          allowUndefined: true,
+          path: '.env',
         },
-        'react-native-dotenv-1', // 고유한 이름 부여
       ],
     ],
   };
