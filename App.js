@@ -1,109 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import {
-  KeyboardAvoidingView,
-  NativeModules,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useEffect, useState } from 'react';
-import { Input } from 'react-native-elements';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import ChatInputForm from './components/inputs/ChatInputForm';
+import ChatHeader from './components/layout/ChatHeader';
+import Layout from './components/layout/Layout';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import Main from './pages/screens/Main';
+import Chat from './pages/screens/Chat';
+import Ranking from './pages/screens/Ranking';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 export default function App() {
-  const [textInput, setTextInput] = useState('');
-  const [chats, setChats] = useState([]);
-  const { StatusBarManager } = NativeModules;
-  const [statusBarHeight, setStatusBarHeight] = useState(0);
-  useEffect(() => {
-    Platform.OS === 'ios'
-      ? StatusBarManager.getHeight((statusBarFrameData) => {
-          setStatusBarHeight(statusBarFrameData.height);
-        })
-      : null;
-  }, []);
-
-  const handleOnClickBtn = () => {
-    setChats([...chats, textInput]);
-    setTextInput('');
-  };
+  const Stack = createStackNavigator();
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <View>
-        {chats.map((chat, index) => {
-          return <Text key={index}>{chat}</Text>;
-        })}
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-
-        <Text>asdad</Text>
-        <Text>asdad</Text>
-      </View>
-      <KeyboardAvoidingView
-        style={styles.textInputBox}
-        behavior={'padding'}
-        keyboardVerticalOffset={statusBarHeight + 44}>
-        <TextInput
-          placeholder="Text Input"
-          value={textInput}
-          onChangeText={setTextInput}
-          style={{ width: '90%', height: 44, backgroundColor: 'black' }}
-          autoCorrect={false}
-        />
-        <TouchableOpacity style={{ width: '10%', height: 44, backgroundColor: 'blue' }} onPress={handleOnClickBtn}>
-          <Text>addd</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <Layout>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Main">
+            <Stack.Screen name="Main" component={Main} />
+            <Stack.Screen name="Chat" component={Chat} />
+            <Stack.Screen name="Ranking" component={Ranking} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Layout>
+    </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ddd',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  textInputBox: {
-    flex: 1,
-    width: '100%',
-    maxHeight: 44,
-    backgroundColor: 'red',
-    display: 'flex',
-    flexDirection: 'row',
-  },
-});
