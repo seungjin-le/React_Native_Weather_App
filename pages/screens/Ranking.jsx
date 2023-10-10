@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { images } from '../../utility/championImages';
 import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
 
-const exampleData = [...Array(20)].map((d, index) => ({
+const exampleData = images.map((item, index) => ({
+  ...item,
   key: `item-${index}`, // For example only -- don't use index as your key!
   label: index,
-  backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index * 5}, ${132})`,
 }));
 
 const Ranking = () => {
@@ -22,129 +22,247 @@ const Ranking = () => {
     {
       ranking: 'S',
       backgroundColor: 'red',
-      champions: [],
+      champions: [
+        {
+          name: 'Aatrox',
+          uri: require('weather_app/assets/images/champion/Aatrox_0.jpg'),
+          key: `item-0`,
+          label: 0,
+        },
+        {
+          name: 'Ahri',
+          uri: require('weather_app/assets/images/champion/Ahri_0.jpg'),
+          key: `item-1`,
+          label: 1,
+        },
+        {
+          name: 'Akali',
+          uri: require('weather_app/assets/images/champion/Akali_0.jpg'),
+          key: `item-2`,
+          label: 2,
+        },
+      ],
     },
     {
       ranking: 'A',
       backgroundColor: 'blue',
-      champions: [],
+      champions: [
+        {
+          name: 'Akshan',
+          uri: require('weather_app/assets/images/champion/Akshan_0.jpg'),
+          key: `item-0`,
+          label: 0,
+        },
+        {
+          name: 'Alistar',
+          uri: require('weather_app/assets/images/champion/Alistar_0.jpg'),
+          key: `item-1`,
+          label: 1,
+        },
+        {
+          name: 'Amumu',
+          uri: require('weather_app/assets/images/champion/Amumu_0.jpg'),
+          key: `item-2`,
+          label: 2,
+        },
+      ],
     },
     {
       ranking: 'B',
       backgroundColor: 'green',
-      champions: [],
+      champions: [
+        {
+          name: 'Aphelios',
+          uri: require('weather_app/assets/images/champion/Aphelios_0.jpg'),
+          key: `item-0`,
+          label: 0,
+        },
+        {
+          name: 'Annie',
+          uri: require('weather_app/assets/images/champion/Annie_0.jpg'),
+          key: `item-1`,
+          label: 1,
+        },
+        {
+          name: 'Anivia',
+          uri: require('weather_app/assets/images/champion/Anivia_0.jpg'),
+          key: `item-2`,
+          label: 2,
+        },
+      ],
     },
     {
       ranking: 'C',
       backgroundColor: 'yellow',
-      champions: [],
+      champions: [
+        {
+          name: 'Azir',
+          uri: require('weather_app/assets/images/champion/Azir_0.jpg'),
+          key: `item-0`,
+          label: 0,
+        },
+        {
+          name: 'Bard',
+          uri: require('weather_app/assets/images/champion/Bard_0.jpg'),
+          key: `item-1`,
+          label: 1,
+        },
+        {
+          name: 'Belveth',
+          uri: require('weather_app/assets/images/champion/Belveth_0.jpg'),
+          key: `item-2`,
+          label: 2,
+        },
+      ],
     },
     {
       ranking: 'D',
       backgroundColor: 'gray',
-      champions: [],
+      champions: [
+        {
+          name: 'Briar',
+          uri: require('weather_app/assets/images/champion/Briar_0.jpg'),
+          key: `item-0`,
+          label: 0,
+        },
+        {
+          name: 'Caitlyn',
+          uri: require('weather_app/assets/images/champion/Caitlyn_0.jpg'),
+          key: `item-1`,
+          label: 1,
+        },
+        {
+          name: 'Camille',
+          uri: require('weather_app/assets/images/champion/Camille_0.jpg'),
+          key: `item-2`,
+          label: 2,
+        },
+      ],
     },
   ]);
 
-  const renderItem = ({ item, index, drag, isActive }) => {
+  const renderItem = ({ item, drag, isActive }) => {
     return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onLongPress={drag}
-        disabled={isActive}
-        style={[
-          styles.rowItem,
-          {
-            opacity: isActive ? 0.5 : 1,
-            padding: 5,
-            backgroundColor: item.backgroundColor,
-          },
-        ]}>
-        <Text style={styles.text}>{item.text}</Text>
-      </TouchableOpacity>
+      <ScaleDecorator>
+        <TouchableOpacity
+          activeOpacity={1}
+          onLongPress={drag}
+          disabled={isActive}
+          style={[
+            styles.rowItem,
+            {
+              opacity: isActive ? 0.5 : 1,
+
+              backgroundColor: item.backgroundColor,
+            },
+          ]}>
+          <Image source={item.uri} style={styles.img} />
+        </TouchableOpacity>
+      </ScaleDecorator>
     );
   };
+
+  const rankingItem = ({ item, drag, isActive }) => {
+    return (
+      <ScaleDecorator>
+        <TouchableOpacity
+          activeOpacity={1}
+          onLongPress={drag}
+          disabled={isActive}
+          style={[
+            styles.rankingLineItem,
+            {
+              opacity: isActive ? 0.5 : 1,
+            },
+          ]}>
+          <Image source={item.uri} style={styles.rankingLineItem} />
+        </TouchableOpacity>
+      </ScaleDecorator>
+    );
+  };
+  const handleDragEnd = (index, newData) => {
+    // index에 해당하는 랭킹의 챔피언 순서를 newData로 업데이트
+    setRankingArr((prevRankingArr) => {
+      const updatedRankingArr = [...prevRankingArr];
+      updatedRankingArr[index] = {
+        ...updatedRankingArr[index],
+        champions: newData,
+      };
+      return updatedRankingArr;
+    });
+  };
   return (
-    <DraggableFlatList
-      // horizontal={true}
-      data={data}
-      renderItem={renderItem}
-      onDragEnd={({ data }) => setData(data)}
-      keyExtractor={(item) => {
-        return item.key;
-      }}
-    />
+    <ScrollView style={{ flex: 1 }}>
+      {rankingArr.map((ranking, index) => {
+        return (
+          <View
+            key={index}
+            id={ranking.ranking}
+            style={{ ...styles.rankingLine, backgroundColor: ranking.backgroundColor }}>
+            <Text>{ranking.ranking}</Text>
+            <DraggableFlatList
+              key={index}
+              horizontal
+              style={{ flex: 1 }}
+              data={ranking.champions}
+              onDragEnd={({ data }) => handleDragEnd(index, data)}
+              keyExtractor={(item) => item.key}
+              renderItem={rankingItem}
+              renderPlaceholder={() => (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: 'rgba(122,122,122,.6)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                />
+              )}
+            />
+          </View>
+        );
+      })}
+      <View style={{ alignItems: 'center' }}>
+        <Text>Champions</Text>
+      </View>
+
+      <DraggableFlatList
+        horizontal
+        data={data}
+        onDragEnd={({ data }) => setData(data)}
+        keyExtractor={(item) => item.key}
+        renderItem={renderItem}
+        renderPlaceholder={() => (
+          <View
+            style={{ flex: 1, backgroundColor: 'rgba(122,122,122,.6)', alignItems: 'center', justifyContent: 'center' }}
+          />
+        )}
+      />
+    </ScrollView>
   );
 };
 
-// {/*<View style={styles.container} ref={viewRef}>*/}
-//       {/*  {rankingArr.map((ranking, index) => {*/}
-//       {/*    return (*/}
-//       {/*      <View*/}
-//       {/*        key={index}*/}
-//       {/*        id={ranking.ranking}*/}
-//       {/*        style={{ ...styles.rankingLine, backgroundColor: ranking.backgroundColor }}*/}
-//       {/*        onLayout={({ nativeEvent: { layout } }) => {*/}
-//       {/*          setRankingHeight((rankingHeight) =>*/}
-//       {/*            rankingHeight.concat({*/}
-//       {/*              ranking: ranking.ranking,*/}
-//       {/*              height: layout.height,*/}
-//       {/*              width: layout.width,*/}
-//       {/*              x: layout.x,*/}
-//       {/*              y: layout.y,*/}
-//       {/*            })*/}
-//       {/*          );*/}
-//       {/*        }}>*/}
-//       {/*        <Text>{ranking.ranking}</Text>*/}
-//       {/*      </View>*/}
-//       {/*    );*/}
-//       {/*  })}*/}
-//
-//       {/*  <View style={styles.containera}>*/}
-//       {/*    <Animated.Image*/}
-//       {/*      style={{*/}
-//       {/*        transform: [{ translateX: pan.x }, { translateY: pan.y }],*/}
-//       {/*        width: 48,*/}
-//       {/*        height: 48,*/}
-//       {/*      }}*/}
-//       {/*      source={require('weather_app/assets/images/champion/Elise_0.jpg')}*/}
-//       {/*    />*/}
-//       {/*  </View>*/}
-//       {/*  <View>*/}
-//       {/*    <ScrollView horizontal={true}>*/}
-//       {/*      {images.map((champion, index) => {*/}
-//       {/*        return (*/}
-//       {/*          <View key={index}>*/}
-//       {/*            <Image style={styles.img} source={champion.uri} />*/}
-//       {/*          </View>*/}
-//       {/*        );*/}
-//       {/*      })}*/}
-//       {/*    </ScrollView>*/}
-//       {/*  </View>*/}
-//       {/*</View>*/}
 export default Ranking;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'blue',
-  },
-  containera: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'lightblue',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   rankingLine: {
-    height: 60,
+    height: 80,
     backgroundColor: 'red',
+    flexDirection: 'row',
+    alignItems: 'start',
+    justifyContent: 'start',
   },
 
   img: {
-    margin: 10,
-    width: 48,
-    height: 48,
+    width: 100,
+    height: 100,
+  },
+  rankingLineItem: {
+    height: 80,
+    width: 80,
   },
   rowItem: {
     height: 100,
